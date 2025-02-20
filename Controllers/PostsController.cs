@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Prosigliere.Dtos;
 using Prosigliere.Models;
 
 namespace Prosigliere.Controllers;
@@ -17,8 +18,9 @@ public class PostsController(AppDbContext context) : ControllerBase
     [HttpGet]
     public async Task<List<BlogPost>> GetAllBlogPosts()
     {
-        await Task.CompletedTask;
-        return [];
+        return await _context.BlogPosts
+            .Include(post => post.Comments)
+            .ToListAsync();
     }
 
     /// <summary>
@@ -27,7 +29,9 @@ public class PostsController(AppDbContext context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<BlogPost>> CreatePost(BlogPost post)
     {
-        await Task.CompletedTask;
+        _context.BlogPosts.Add(post);
+        await _context.SaveChangesAsync();
+
         return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, post);
     }
 
@@ -35,19 +39,34 @@ public class PostsController(AppDbContext context) : ControllerBase
     /// Retrieve a specific blog post by its ID, including its title, content, and a list of associated comments
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<BlogPost> GetPostById(Guid id)
+    public async Task<BlogPost?> GetPostById(Guid id)
     {
-        await Task.CompletedTask;
-        return new BlogPost { Id = id, Title = "Test Post", Content = "This is a test post." };
+        return await _context.BlogPosts
+            .Include(post => post.Comments)
+            .FirstOrDefaultAsync(post => post.Id == id);
     }
 
     /// <summary>
     /// Add a new comment to a specific blog post.
     /// </summary>
     [HttpPost("{id}/comments")]
-    public async Task<ActionResult<Comment>> AddCommentToPost(Guid id, Comment comment)
+    public async Task<ActionResult<Comment>> AddCommentToPost(Guid id, CommentDto commentDto)
     {
-        await Task.CompletedTask;
-        return CreatedAtAction(nameof(Comment), new { id = comment.Id }, comment);
+        if (!await context.BlogPosts.AnyAsync(post => post.Id == id))
+        {
+            return NotFound("Post not found");
+        }
+        
+        var comment = new Comment
+        {
+            Id = commentDto.Id ?? Guid.NewGuid(),
+            Content = commentDto.Content,
+            BlogPostId = id
+        };
+
+        _context.Comments.Add(comment);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(AddCommentToPost), new { id = comment.Id }, comment);
     }
 }
