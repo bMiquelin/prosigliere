@@ -1,11 +1,12 @@
 # Blogging Platform API
 
-This is a simple RESTful API for managing a blog platform.
-The core functionality of this platform includes managing blog posts and their
+This project is dedicated to the job challenge of Prosigliere:  
+A simple RESTful API for managing a blog platform. The core functionality of this platform includes managing blog posts and their
 associated comments.
 
-
 ## Setup
+Should have .NET SDK 9 installed to run locally ->
+https://dotnet.microsoft.com/pt-br/download/dotnet/9.0
 
 ```bash
    git clone https://github.com/bMiquelin/prosigliere
@@ -14,6 +15,16 @@ associated comments.
    dotnet ef database update
    dotnet run
 ```
+
+The `db ef database update` will create a SQLite file for the database. EF could be further extended to a specific database engine.
+
+## Features
+1. List all blog posts
+2. Create a new blog post
+3. Retrieve a specific blog post
+4. Add a new comment to a specific blog post
+
+
 
 ## Test Calls
 
