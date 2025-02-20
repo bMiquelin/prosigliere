@@ -5,9 +5,13 @@ A simple RESTful API for managing a blog platform. The core functionality of thi
 associated comments.
 
 ## Setup
-Should have .NET SDK 9 installed to run locally ->
-https://dotnet.microsoft.com/pt-br/download/dotnet/9.0
 
+### Prerequisites
+- **.NET SDK 9**: Install the .NET SDK from [here](https://dotnet.microsoft.com/pt-br/download/dotnet/9.0).
+- **Git**: Ensure Git is installed to clone the repository.
+
+
+### Steps to Run Locally
 ```bash
    git clone https://github.com/bMiquelin/prosigliere
    cd prosigliere
@@ -18,12 +22,20 @@ https://dotnet.microsoft.com/pt-br/download/dotnet/9.0
 
 The `db ef database update` will create a SQLite file for the database. EF could be further extended to a specific database engine.
 
+The API will be available at http://localhost:5273.
+
 ## Features
 1. List all blog posts
 2. Create a new blog post
 3. Retrieve a specific blog post
 4. Add a new comment to a specific blog post
 
+## Next steps if you had more time available
+- Add serilog to log the calls
+- Handle auth: post/comment & read/write permissions, rate limit
+- Change default database engine from SQLite to something else that handles better high concurrency, scalability and security (Altough it was asked to be production ready, it was the choice for the sake of simplicity to run locally)
+- Application telemetry and monitoring (application insights, elastic)
+- Other optional features (likes/reactions, author, thumbnail upload, timestamps, RSS, content auto-mod)
 
 
 ## Test Calls
